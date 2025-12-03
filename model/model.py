@@ -1,10 +1,17 @@
 import networkx as nx
+from networkx.classes import degree
+
 from database.dao import DAO
 
 
 class Model:
     def __init__(self):
-        self.G = nx.Graph()
+        self._grafo = nx.Graph() #grafico, semplice, non diretto ma pesato
+        self._lista_rifugi = []
+        self.get_nodes()
+        self._dict_rifugi = {}
+        for rifugio in self._lista_rifugi:
+            self._dict_rifugi[rifugio.id_rifugio] = rifugio
 
     def build_graph(self, year: int):
         """
@@ -13,6 +20,15 @@ class Model:
         Quindi il grafo avrà solo i nodi che appartengono almeno ad una connessione, non tutti quelli disponibili.
         :param year: anno limite fino al quale selezionare le connessioni da includere.
         """
+        #aggiungo i nodi
+        self._grafo.add_nodes_from(self._dict_rifugi)
+
+        #devo cercare le connessioni nel database
+        connessioni= DAO.get_connessioni(year, self._dict_rifugi)
+        for c in connessioni:
+            self._grafo.add_edge(c.id_rifugio1, c.id_rifugio2)
+
+
         # TODO
 
     def get_nodes(self):
@@ -20,6 +36,8 @@ class Model:
         Restituisce la lista dei rifugi presenti nel grafo.
         :return: lista dei rifugi presenti nel grafo.
         """
+        self._lista_rifugi = DAO.ReadRifugi()
+
         # TODO
 
     def get_num_neighbors(self, node):
@@ -28,6 +46,9 @@ class Model:
         :param node: un rifugio (cioè un nodo del grafo)
         :return: numero di vicini diretti del nodo indicato
         """
+        degree = node.get_degree()
+        return degree
+
         # TODO
 
     def get_num_connected_components(self):
@@ -35,6 +56,7 @@ class Model:
         Restituisce il numero di componenti connesse del grafo.
         :return: numero di componenti connesse
         """
+        return nx.number_connected_components(self._grafo)
         # TODO
 
     def get_reachable(self, start):
