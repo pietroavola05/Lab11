@@ -2,22 +2,22 @@ from dataclasses import dataclass
 
 @dataclass
 class Rifugio:
-    id_rifugio: int
+    id: int
     nome: str
     localita: str
     altitudine : float
     capienza : int
-    aperto: True
+    aperto: int
 
 
     def __hash__(self):
-            return hash(self.id_rifugio)
+        return hash(self.id)
 
     def __eq__(self, other):
-        return self.id_rifugio == other.id_rifugio
+        return self.id == other.id
 
     def __str__(self):
-        return self.nome
+        return f"{self.nome}"
 
 
 

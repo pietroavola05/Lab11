@@ -7,7 +7,7 @@ class DAO:
     """
         Implementare tutte le funzioni necessarie a interrogare il database.
         """
-    #
+
     @staticmethod
     def ReadRifugi():
         conn = DBConnect.get_connection()
@@ -30,13 +30,14 @@ class DAO:
         result = []
         cursor = conn.cursor(dictionary=True)
 
-        query = """SELECT id_connessione, id_rifugio1, id_rifugio2
-                    FROM connessioni 
-                    WHERE year > %s and id_rifugio1 < id_rifugio2 """
+        query = """SELECT id, id_rifugio1, id_rifugio2
+                    FROM connessione
+                    WHERE anno <= %s and id_rifugio1 < id_rifugio2 """
 
         cursor.execute(query, (year,))
         for row in cursor:
-            id_connessione = row['id_connessione']
+            id_connessione = row['id']
+            #prendo gli oggetti rifugio relativi a quell'id rifugio attraverso il map dei rigufi passato dal model
             rifugio1 = dict_rifugi[row['id_rifugio1']]
             rifugio2 = dict_rifugi[row['id_rifugio2']]
             result.append(Connessione(id_connessione, rifugio1, rifugio2))

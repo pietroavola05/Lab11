@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-
 from model.rifugio import Rifugio
 
 
@@ -11,3 +10,9 @@ class Connessione:
 
     def __hash__(self):
         return hash(self.id_connessione)
+
+    def __eq__(self, other):
+        return self.id_connessione == other.id_connessione
+
+    def __str__(self):
+        return f"Connessione tra {self.id_rifugio1} e {self.id_rifugio2}"
